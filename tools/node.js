@@ -31,6 +31,7 @@ UglifyJS.AST_Node.warn_function = function(txt) {
 };
 
 exports.minify = function(files, options) {
+    console.log('minify');
     options = UglifyJS.defaults(options, {
         spidermonkey     : false,
         outSourceMap     : null,
@@ -97,9 +98,18 @@ exports.minify = function(files, options) {
 
     // 5. output
     var inMap = options.inSourceMap;
+    console.log(inMap);
     var output = {};
     if (typeof options.inSourceMap == "string") {
         inMap = fs.readFileSync(options.inSourceMap, "utf8");
+    } else if (typeof options.inSourceMap == "boolean" && options.inSourceMap) {
+        inMap = function(source) {
+            return fs.readFileSync(source + '.map', "utf8");
+        };
+    } else if (typeof options.inSourceMap == "function") {
+        inMap = function(source) {
+            return fs.readFileSync(source + '.map', "utf8");
+        };
     }
     if (options.outSourceMap) {
         output.source_map = UglifyJS.SourceMap({

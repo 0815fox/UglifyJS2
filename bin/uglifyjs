@@ -266,7 +266,11 @@ if (ARGS.self) {
 
 var ORIG_MAP = ARGS.in_source_map;
 
-if (ORIG_MAP) {
+if (ORIG_MAP == 'true') {
+    ORIG_MAP = function(source) {
+      return fs.readFileSync(source + '.map', "utf8");
+    };
+} else if (ORIG_MAP) {
     ORIG_MAP = JSON.parse(fs.readFileSync(ORIG_MAP));
     if (files.length == 0) {
         print_error("INFO: Using file from the input source map: " + ORIG_MAP.file);
